@@ -49,3 +49,36 @@ node* find(node **head,int y,int x) {
     }
     return current;
 }
+void make_ship(int size, node *head) {
+    int x1, x2, y1, y2;
+    while (1) {
+        scanf("%d %d-%d %d", &y1, &x1, &y2, &x2);
+        int x = (x1 >= x2) ? x2 : x1;
+        int y = (y1 >= y2) ? y2 : y1;
+
+        if ((x1 > x_size) || (y1 > y_size) || (x2 > x_size) || (y2 > y_size) || ((x1 != x2) && (y1 != y2)) ||
+            ((x1 == x2) && ((abs(y1 - y2) != size - 1) || (y > (y_size + 1) - size))) ||
+            ((y1 == y2) && (abs(x1 - x2) != size - 1) || (x > (x_size + 1) - size))) {
+            printf("Wrong input! try again.\n");
+            continue;
+        }
+
+        if (y1 == y2) {
+            for (int j = 0; j < size; j++) {
+                node* tmp = find(&head,y,x);
+                tmp->ship = true;
+                x++;
+            }
+        }
+
+        if (x1 == x2) {
+            for (int j = 0; j < size; j++) {
+                node* tmp = find(&head,y,x);
+                tmp->ship = true;
+                y++;
+            }
+        }
+        break;
+    }
+}
+
