@@ -32,6 +32,24 @@ void creat_map(node **head) {
     }
 }
 
+node* find(node *head,int y,int x) {
+
+    node* current = head;
+
+    if(head == NULL) {
+        return NULL;
+    }
+    while((current->y != y)&&(current->x != x)) {
+
+        if(current->next == NULL) {
+            return NULL;
+        } else {
+            current = current->next;
+        }
+    }
+    return current;
+}
+
 
 
 
