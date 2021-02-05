@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-
 int x_size = 10, y_size = 10;
 
 typedef struct Node{
@@ -62,8 +61,23 @@ void make_ship(int size, node *head) {
             printf("Wrong input! try again.\n");
             continue;
         }
+        bool state = true;
 
         if (y1 == y2) {
+            for (int i = 0; i < size; i++) {
+                node* test = find(&head,y,x);
+                if (test->ship == true){
+                    state = false;
+                    break;
+                }
+                x++;
+            }
+            if (!state){
+                printf("ships have Overlap! try again.");
+                continue;
+            }
+             x = (x1 >= x2) ? x2 : x1;
+             y = (y1 >= y2) ? y2 : y1;
             for (int j = 0; j < size; j++) {
                 node* tmp = find(&head,y,x);
                 tmp->ship = true;
@@ -72,6 +86,20 @@ void make_ship(int size, node *head) {
         }
 
         if (x1 == x2) {
+            for (int i = 0; i < size; i++) {
+                node* test = find(&head,y,x);
+                if (test->ship == true){
+                    state = false;
+                    break;
+                }
+                y++;
+            }
+            if (!state){
+                printf("ships have Overlap! try again.");
+                continue;
+            }
+             x = (x1 >= x2) ? x2 : x1;
+             y = (y1 >= y2) ? y2 : y1;
             for (int j = 0; j < size; j++) {
                 node* tmp = find(&head,y,x);
                 tmp->ship = true;
