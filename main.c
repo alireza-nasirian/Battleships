@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <conio.h>
 
 int x_size = 10, y_size = 10;
 
@@ -204,8 +203,21 @@ void arrange_ships(node *head) {
         }
     }
 }
+void reverse(struct Node **head_ref) {
+    struct Node *prev = NULL;
+    struct Node *current = *head_ref;
+    struct Node *next = NULL;
+    while (current != NULL) {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+    *head_ref = prev;
+}
 void print_map(node* head) {
     node *ptr = head;
+    reverse(&ptr);
     printf("    ");
     for (int j = 0; j < x_size ; j++) {
         printf(" %2d  |", j + 1);
