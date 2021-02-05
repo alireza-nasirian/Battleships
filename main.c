@@ -58,27 +58,46 @@ void make_ship(int size, node *head) {
 
         if ((x1 > x_size) || (y1 > y_size) || (x2 > x_size) || (y2 > y_size) || ((x1 != x2) && (y1 != y2)) ||
             ((x1 == x2) && ((abs(y1 - y2) != size - 1) || (y > (y_size + 1) - size))) ||
-            ((y1 == y2) && (abs(x1 - x2) != size - 1) || (x > (x_size + 1) - size))) {
+            ((y1 == y2) && ((abs(x1 - x2) != size - 1) || (x > (x_size + 1) - size)))) {
             printf("Wrong input! try again.\n");
             continue;
         }
         bool state = true;
+        int Y = y-1 ;
+        int X = x-1 ;
 
         if (y1 == y2) {
-            for (int i = 0; i < size; i++) {
-                node* test = find(&head,y,x);
-                if (test->ship == true){
-                    state = false;
+            for (int i = 0; i < 3; +i++) {
+                if (Y == 0){
+                    Y++;
+                    i++;
+                }
+                for (int j = 0; j< size+2; j++) {
+                    if (X == 0){
+                        X++;
+                        j++;
+                    }
+                    node* test = find(&head,Y,X);
+                    if (test->ship == true){
+                        state = false;
+                        break;
+                    }
+                    X++;
+                    if (X == 11){
+                        break;
+                    }
+                }
+                Y++;
+                if (Y == 11){
                     break;
                 }
-                x++;
+                X = x-1;
             }
+
             if (!state){
-                printf("ships have Overlap! try again.");
+                printf("ships have Overlap! try again.\n");
                 continue;
             }
-             x = (x1 >= x2) ? x2 : x1;
-             y = (y1 >= y2) ? y2 : y1;
             for (int j = 0; j < size; j++) {
                 node* tmp = find(&head,y,x);
                 tmp->ship = true;
@@ -87,16 +106,35 @@ void make_ship(int size, node *head) {
         }
 
         if (x1 == x2) {
-            for (int i = 0; i < size; i++) {
-                node* test = find(&head,y,x);
-                if (test->ship == true){
-                    state = false;
+            for (int i = 0; i < 3; i++) {
+                if (X == 0){
+                    X++;
+                    i++;
+                }
+                for (int j = 0; j < size; j++) {
+                    if (Y == 0){
+                        Y++;
+                        j++;
+                    }
+                    node* test = find(&head,Y,X);
+                    if (test->ship == true){
+                        state = false;
+                        break;
+                    }
+                    Y++;
+                    if (Y==11){
+                        break;
+                    }
+                }
+                Y = y-1;
+                X++;
+                if(X == 11){
                     break;
                 }
-                y++;
             }
+
             if (!state){
-                printf("ships have Overlap! try again.");
+                printf("ships have Overlap! try again.\n");
                 continue;
             }
              x = (x1 >= x2) ? x2 : x1;
@@ -125,10 +163,45 @@ void arrange_ships(node *head) {
     }
     for (int i = 0; i < 4; i++) {
         printf("Enter position of your %dth 1*1 ship\tfor example: 4 7\n", i + 1);
-        int y,x;
-        scanf("%d %d",&y,&x);
-        node *tmp = find(&head, y, x);
-        tmp->ship =true;
+        int y, x;
+        while (1) {
+            bool state = true;
+            scanf("%d %d", &y, &x);
+            int X = x - 1, Y = y - 1;
+            for (int j = 0; j < 3; j++) {
+                if (Y == 0) {
+                    Y++;
+                    j++;
+                }
+                for (int k = 0; k < 3; k++) {
+                    if (X == 0) {
+                        X++;
+                        k++;
+                    }
+                    node *tmp = find(&head, Y, X);
+                    if (tmp->ship == true) {
+                        state = false;
+                    }
+                    X++;
+                    if (X == 11){
+                        break;
+                    }
+                }
+                Y++;
+                X -= 3;
+                if(Y == 11){
+                    break;
+                }
+
+            }
+            if (!state) {
+                printf("ships have Overlap! try again.\n");
+                continue;
+            }
+            node *tmp = find(&head, y, x);
+            tmp->ship = true;
+            break;
+        }
     }
 }
 void print_map(node* head) {
@@ -146,7 +219,7 @@ void print_map(node* head) {
         printf("\n");
         printf("%2d |", i + 1);
         for (int j = 0; j < x_size; j++) {
-            printf("  %c  |", ptr->state);
+            printf("  %d  |", ptr->ship);
             ptr = ptr->next;
         }
         printf("\n");
@@ -156,4 +229,5 @@ void print_map(node* head) {
         printf("---");
     }
 }
+
 
