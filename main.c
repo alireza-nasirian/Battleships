@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <conio.h>
 
 int x_size = 10, y_size = 10;
 
@@ -118,18 +119,41 @@ void arrange_ships(node *head) {
         printf("Enter position of the first and last block of your %dth 1*3 ship\n", i + 1);
         make_ship(3,head);
     }
-
     for (int i = 0; i < 3; i++) {
         printf("Enter position of the first and last block of your %dth 1*2 ship\n", i + 1);
         make_ship(2,head);
     }
-
     for (int i = 0; i < 4; i++) {
         printf("Enter position of your %dth 1*1 ship\tfor example: 4 7\n", i + 1);
         int y,x;
         scanf("%d %d",&y,&x);
         node *tmp = find(&head, y, x);
         tmp->ship =true;
+    }
+}
+void print_map(node* head) {
+    node *ptr = head;
+    printf("    ");
+    for (int j = 0; j < x_size ; j++) {
+        printf(" %2d  |", j + 1);
+    }
+    printf("\n");
+    for (int i = 0; i < x_size; i++) {
+        printf("------");
+    }
+    printf("---");
+    for (int i = 0; i < y_size; i++) {
+        printf("\n");
+        printf("%2d |", i + 1);
+        for (int j = 0; j < x_size; j++) {
+            printf("  %c  |", ptr->state);
+            ptr = ptr->next;
+        }
+        printf("\n");
+        for (int j = 0; j < x_size; j++) {
+            printf("------");
+        }
+        printf("---");
     }
 }
 
