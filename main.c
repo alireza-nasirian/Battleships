@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 
 int x_size = 10, y_size = 10;
 
@@ -242,4 +243,63 @@ void print_map(node* head) {
     }
 }
 
+void auto_make_ship(node* head,FILE* map,int size){
+    int x1, x2, y1, y2;
+    fscanf(map,"%d %d-%d %d",&y1,&x1,&y2,&x2);
+    int x = (x1 >= x2) ? x2 : x1;
+    int y = (y1 >= y2) ? y2 : y1;
+    if (y1 == y2) {
 
+        for (int j = 0; j <size ; j++) {
+            node* tmp = find(&head,y,x);
+            tmp->ship = true;
+            x++;
+        }
+    }
+    if (x1 == x2) {
+        for (int j = 0; j < size; j++) {
+            node* tmp = find(&head,y,x);
+            tmp->ship = true;
+            y++;
+        }
+    }
+
+}
+
+void auto_arrange_ships(node* head){
+    FILE *map;
+
+    int d = (rand()%5)+1;
+    printf("%d\n",d);
+    switch (d) {
+        case 1:
+            map = fopen("1.txt","rb");
+            break;
+        case 2:
+            map = fopen("2.txt","rb");
+            break;
+        case 3:
+            map = fopen("3.txt","rb");
+            break;
+        case 4:
+            map = fopen("4.txt","rb");
+            break;
+        case 5:
+            map = fopen("5.txt","rb");
+            break;
+    }
+
+    auto_make_ship(head,map,5);
+    for (int i=0;i<2;i++){
+        auto_make_ship(head,map,3);
+    }
+    for (int i=0;i<3;i++){
+        auto_make_ship(head,map,2);
+    }
+    for (int i = 0; i < 4; i++) {
+        int x,y;
+        fscanf(map,"%d %d",&y,&x);
+        node *tmp =find(&head,y,x);
+        tmp->ship = true;
+    }
+}
