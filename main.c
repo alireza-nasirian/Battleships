@@ -14,6 +14,7 @@ typedef struct Node {
 
 node *head1 = NULL;
 node *head2 = NULL;
+int score1 = 0,score2 = 0;
 
 void insert(int key, bool ship, char state, node **head) {
     node *link = (node *) malloc(sizeof(node));
@@ -358,20 +359,27 @@ void W_maker(node* head ,int y , int x){
     }
 }
 
-void shoot(node *head) {
+void shoot(node *head,bool manual) {
 
     int y, x;
-    printf("Enter the point you want to shoot    <row><column> ex:4 6\n");
-    scanf("%d %d", &y, &x);
+
+    if (!manual){
+        y = (rand()%y_size)+1;
+        x = (rand()%x_size)+1;
+    }
+    if (manual) {
+        printf("Enter the point you want to shoot    <row><column> ex:4 6\n");
+        scanf("%d %d", &y, &x);
+    }
 
     if ((x > x_size) || (y > y_size)) {
         printf("Wrong input. try again.\n");
-        shoot(head);
+        shoot(head,manual);
     }
     node *tmp = find(&head, y, x);
     if (tmp->state != ' ') {
         printf("Wrong input. choose empty point!\n");
-        shoot(head);
+        shoot(head,manual);
     }
     if (tmp->ship == false) {
         tmp->state = 'W';
