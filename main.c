@@ -298,3 +298,323 @@ void auto_arrange_ships(node *head) {
     }
 }
 
+int find_ship(node *head, int y, int x) {
+    bool up = false, down = false, right = false, left = false;
+    if (y != y_size) {
+        node *test = find(&head, y + 1, x);
+        if (test->ship == 1) {
+            down = true;
+        }
+    }
+    if (y != 1) {
+        node *test = find(&head, y - 1, x);
+        if (test->ship == 1) {
+            up = true;
+        }
+    }
+    if (x != x_size) {
+        node *test = find(&head, y, x + 1);
+        if (test->ship == 1) {
+            right = true;
+        }
+    }
+    if (x != 1) {
+        node *test = find(&head, y, x - 1);
+        if (test->ship == 1) {
+            left = true;
+        }
+    }
+    if (left && right) {
+        return 34;
+    } else if (up && down) {
+        return 12;
+    } else if (up) {
+        return 1;
+    } else if (down) {
+        return 2;
+    } else if (left) {
+        return 3;
+    } else if (right) {
+        return 4;
+    } else {
+        return 0;
+    }
+
+}
+
+void W_maker(node* head ,int y , int x){
+
+    for (int i = 0; i < 3; i++){
+        for (int j = 0; j < 3; j++) {
+            int Y = (y-1)+i, X = (x-1)+j;
+            if ((Y == y_size+1) ||(Y == 0) || (X == x_size+1) || (X == 0)){
+                continue;
+            }
+            node *tmp = find(&head,Y,X);
+            if (tmp->ship == false){
+                tmp->state = 'W';
+            }
+        }
+    }
+}
+
+void shoot(node *head) {
+
+    int y, x;
+    printf("Enter the point you want to shoot    <row><column> ex:4 6\n");
+    scanf("%d %d", &y, &x);
+
+    if ((x > x_size) || (y > y_size)) {
+        printf("Wrong input. try again.\n");
+        shoot(head);
+    }
+    node *tmp = find(&head, y, x);
+    if (tmp->state != ' ') {
+        printf("Wrong input. choose empty point!\n");
+        shoot(head);
+    }
+    if (tmp->ship == false) {
+        tmp->state = 'W';
+    }
+    if (tmp->ship == true) {
+        bool state = true;
+        if (find_ship(head, y, x) == 0) {
+            tmp->state = 'C';
+            W_maker(head,y,x);
+        }
+        if (find_ship(head, y, x) == 1) {
+            int Y = y, X = x;
+            while (1) {
+                Y--;
+                if (Y == 0) {
+                    break;
+                }
+                node *test = find(&head, Y, X);
+                if (test->ship == false){
+                    break;
+                }
+                if (test->state == ' ') {
+                    state = false;
+                    break;
+                }
+                if (test->state == 'W') {
+                    break;
+                }
+            }
+            if (state) {
+                while ((y != 0) && (tmp->state != 'W')&&(tmp->ship)) {
+                    tmp->state = 'C';
+                    W_maker(head,y,x);
+                    y--;
+                    tmp = find(&head, y, x);
+                }
+            } else {
+                tmp->state = 'E';
+            }
+        }
+        if (find_ship(head, y, x) == 2) {
+            int Y = y, X = x;
+            while (1) {
+                Y++;
+                if (Y == y_size + 1) {
+                    break;
+                }
+                node *test = find(&head, Y, X);
+                if (test->ship == false){
+                    break;
+                }
+                if (test->state == ' ') {
+                    state = false;
+                    break;
+                }
+                if (test->state == 'W') {
+                    break;
+                }
+
+            }
+            if (state) {
+                while ((y != y_size) && (tmp->state != 'W') && (tmp->ship)) {
+                    tmp->state = 'C';
+                    W_maker(head,y,x);
+                    y++;
+                    tmp = find(&head, y, x);
+                }
+            } else {
+                tmp->state = 'E';
+            }
+        }
+        if (find_ship(head, y, x) == 3) {
+            int Y = y, X = x;
+            while (1) {
+                X--;
+                if (X == 0) {
+                    break;
+                }
+                node *test = find(&head, Y, X);
+                if (test->ship == false){
+                    break;
+                }
+                if (test->state == ' ') {
+                    state = false;
+                    break;
+                }
+                if (test->state == 'W') {
+                    break;
+                }
+            }
+            if (state) {
+                while ((x != 0) && (tmp->state != 'W') && (tmp->ship)) {
+                    tmp->state = 'C';
+                    W_maker(head,y,x);
+                    x--;
+                    tmp = find(&head, y, x);
+                }
+            } else {
+                tmp->state = 'E';
+            }
+        }
+        if (find_ship(head, y, x) == 4) {
+            int Y = y, X = x;
+            while (1) {
+                X++;
+                if (X == x_size + 1) {
+                    break;
+                }
+                node *test = find(&head, Y, X);
+                if (test->ship == false){
+                    break;
+                }
+                if (test->state == ' ') {
+                    state = false;
+                    break;
+                }
+                if (test->state == 'W') {
+                    break;
+                }
+            }
+            if (state) {
+                while ((x != x_size) && (tmp->state != 'W') && (tmp->ship)) {
+                    tmp->state = 'C';
+                    W_maker(head,y,x);
+                    x++;
+                    tmp = find(&head, y, x);
+                }
+            } else {
+                tmp->state = 'E';
+            }
+
+        }
+        if (find_ship(head, y, x) == 34) {
+            int Y = y, X = x;
+            while (1) {
+                X++;
+                if (X == x_size + 1) {
+                    break;
+                }
+                node *test = find(&head, Y, X);
+                if (test->ship == false){
+                    break;
+                }
+                if (test->state == ' ') {
+                    state = false;
+                    break;
+                }
+                if (test->state == 'W') {
+                    break;
+                }
+            }
+
+            Y = y, X = x;
+            while (1) {
+                X--;
+                if (X == 0) {
+                    break;
+                }
+                node *test = find(&head, Y, X);
+                if (test->ship == false){
+                    break;
+                }
+                if (test->state == ' ') {
+                    state = false;
+                    break;
+                }
+                if (test->state == 'W') {
+                    break;
+                }
+            }
+            if (state) {
+                while ((x != 0) && (tmp->state != 'W') && (tmp->ship)) {
+                    tmp->state = 'C';
+                    W_maker(head,y,x);
+                    x--;
+                    tmp = find(&head, y, x);
+                }
+                x++;
+                while ((x != x_size) && (tmp->state != 'W') && (tmp->ship)) {
+                    tmp->state = 'C';
+                    W_maker(head,y,x);
+                    x++;
+                    tmp = find(&head, y, x);
+                }
+            } else {
+                tmp->state = 'E';
+            }
+        }
+        if (find_ship(head, y, x) == 12) {
+            int Y = y, X = x;
+            while (1) {
+                Y++;
+                if (Y == y_size + 1) {
+                    break;
+                }
+                node *test = find(&head, Y, X);
+                if (test->ship == false){
+                    break;
+                }
+                if (test->state == ' ') {
+                    state = false;
+                    break;
+                }
+                if (test->state == 'W') {
+                    break;
+                }
+            }
+
+            Y = y, X = x;
+            while (1) {
+                Y--;
+                if (Y == 0) {
+                    break;
+                }
+                node *test = find(&head, Y, X);
+                if (test->ship == false){
+                    break;
+                }
+                if (test->state == ' ') {
+                    state = false;
+                    break;
+                }
+                if (test->state == 'W') {
+                    break;
+                }
+            }
+            if (state) {
+                while ((y != 0) && (tmp->state != 'W') && (tmp->ship)) {
+                    tmp->state = 'C';
+                    W_maker(head,y,x);
+                    y--;
+                    tmp = find(&head, y, x);
+                }
+                y++;
+                while ((y != x_size) && (tmp->state != 'W') && (tmp->ship)) {
+                    tmp->state = 'C';
+                    W_maker(head,y,x);
+                    y++;
+                    tmp = find(&head, y, x);
+                }
+            } else {
+                tmp->state = 'E';
+            }
+        }
+    }
+};
