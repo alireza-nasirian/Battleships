@@ -5,18 +5,18 @@
 
 int x_size = 10, y_size = 10;
 
-typedef struct Node{
+typedef struct Node {
     bool ship;      //true: when this node contains ship - false: this node doesn't contain ship
     char state;    // ' ':Unknown - 'w' = water - e = exploded - 'c' = completely  exploded
     int key;
     struct Node *next;
-}node;
+} node;
 
 node *head1 = NULL;
 node *head2 = NULL;
 
-void insert(int key,bool ship,char state,node** head){
-    node *link = (node*)malloc(sizeof(node));
+void insert(int key, bool ship, char state, node **head) {
+    node *link = (node *) malloc(sizeof(node));
     link->key = key;
     link->ship = ship;
     link->state = state;
@@ -27,21 +27,21 @@ void insert(int key,bool ship,char state,node** head){
 
 void creat_map(node **head) {
     for (int i = 0; i < (x_size * y_size); i++) {
-        insert(i+1, false, ' ',head);
+        insert((x_size * y_size) - i, false, ' ', head);
     }
 }
 
-node* find(node **head,int y,int x) {
-    int key = ((y-1)*10) + x;
+node *find(node **head, int y, int x) {
+    int key = ((y - 1) * 10) + x;
 
-    node* current = *head;
+    node *current = *head;
 
-    if(*head == NULL) {
+    if (*head == NULL) {
         return NULL;
     }
-    while(current->key != key) {
+    while (current->key != key) {
 
-        if(current->next == NULL) {
+        if (current->next == NULL) {
             return NULL;
         } else {
             current = current->next;
@@ -49,6 +49,7 @@ node* find(node **head,int y,int x) {
     }
     return current;
 }
+
 void make_ship(int size, node *head) {
     int x1, x2, y1, y2;
     while (1) {
@@ -63,43 +64,43 @@ void make_ship(int size, node *head) {
             continue;
         }
         bool state = true;
-        int Y = y-1 ;
-        int X = x-1 ;
+        int Y = y - 1;
+        int X = x - 1;
 
         if (y1 == y2) {
             for (int i = 0; i < 3; +i++) {
-                if (Y == 0){
+                if (Y == 0) {
                     Y++;
                     i++;
                 }
-                for (int j = 0; j< size+2; j++) {
-                    if (X == 0){
+                for (int j = 0; j < size + 2; j++) {
+                    if (X == 0) {
                         X++;
                         j++;
                     }
-                    node* test = find(&head,Y,X);
-                    if (test->ship == true){
+                    node *test = find(&head, Y, X);
+                    if (test->ship == true) {
                         state = false;
                         break;
                     }
                     X++;
-                    if (X == 11){
+                    if (X == 11) {
                         break;
                     }
                 }
                 Y++;
-                if (Y == 11){
+                if (Y == 11) {
                     break;
                 }
-                X = x-1;
+                X = x - 1;
             }
 
-            if (!state){
+            if (!state) {
                 printf("ships have Overlap! try again.\n");
                 continue;
             }
             for (int j = 0; j < size; j++) {
-                node* tmp = find(&head,y,x);
+                node *tmp = find(&head, y, x);
                 tmp->ship = true;
                 x++;
             }
@@ -107,40 +108,40 @@ void make_ship(int size, node *head) {
 
         if (x1 == x2) {
             for (int i = 0; i < 3; i++) {
-                if (X == 0){
+                if (X == 0) {
                     X++;
                     i++;
                 }
                 for (int j = 0; j < size; j++) {
-                    if (Y == 0){
+                    if (Y == 0) {
                         Y++;
                         j++;
                     }
-                    node* test = find(&head,Y,X);
-                    if (test->ship == true){
+                    node *test = find(&head, Y, X);
+                    if (test->ship == true) {
                         state = false;
                         break;
                     }
                     Y++;
-                    if (Y==11){
+                    if (Y == 11) {
                         break;
                     }
                 }
-                Y = y-1;
+                Y = y - 1;
                 X++;
-                if(X == 11){
+                if (X == 11) {
                     break;
                 }
             }
 
-            if (!state){
+            if (!state) {
                 printf("ships have Overlap! try again.\n");
                 continue;
             }
-             x = (x1 >= x2) ? x2 : x1;
-             y = (y1 >= y2) ? y2 : y1;
+            x = (x1 >= x2) ? x2 : x1;
+            y = (y1 >= y2) ? y2 : y1;
             for (int j = 0; j < size; j++) {
-                node* tmp = find(&head,y,x);
+                node *tmp = find(&head, y, x);
                 tmp->ship = true;
                 y++;
             }
@@ -148,18 +149,19 @@ void make_ship(int size, node *head) {
         break;
     }
 }
+
 void arrange_ships(node *head) {
 
     printf("Enter position of the first and last block of your 1*5 ship\trow column for example: 3 2-3 6\n");
-    make_ship(5,head);
+    make_ship(5, head);
 
     for (int i = 0; i < 2; i++) {
         printf("Enter position of the first and last block of your %dth 1*3 ship\n", i + 1);
-        make_ship(3,head);
+        make_ship(3, head);
     }
     for (int i = 0; i < 3; i++) {
         printf("Enter position of the first and last block of your %dth 1*2 ship\n", i + 1);
-        make_ship(2,head);
+        make_ship(2, head);
     }
     for (int i = 0; i < 4; i++) {
         printf("Enter position of your %dth 1*1 ship\tfor example: 4 7\n", i + 1);
@@ -183,13 +185,13 @@ void arrange_ships(node *head) {
                         state = false;
                     }
                     X++;
-                    if (X == 11){
+                    if (X == 11) {
                         break;
                     }
                 }
                 Y++;
                 X -= 3;
-                if(Y == 11){
+                if (Y == 11) {
                     break;
                 }
 
@@ -204,23 +206,13 @@ void arrange_ships(node *head) {
         }
     }
 }
-void reverse(struct Node **head_ref) {
-    struct Node *prev = NULL;
-    struct Node *current = *head_ref;
-    struct Node *next = NULL;
-    while (current != NULL) {
-        next = current->next;
-        current->next = prev;
-        prev = current;
-        current = next;
-    }
-    *head_ref = prev;
-}
-void print_map(node* head) {
-    node *ptr = head;
-    reverse(&ptr);
+
+void print_map(node *head) {
+
+    node *tmp = head;
+
     printf("    ");
-    for (int j = 0; j < x_size ; j++) {
+    for (int j = 0; j < x_size; j++) {
         printf(" %2d  |", j + 1);
     }
     printf("\n");
@@ -232,8 +224,8 @@ void print_map(node* head) {
         printf("\n");
         printf("%2d |", i + 1);
         for (int j = 0; j < x_size; j++) {
-            printf("  %d  |", ptr->ship);
-            ptr = ptr->next;
+            printf("  %c  |", tmp->state);
+            tmp = tmp->next;
         }
         printf("\n");
         for (int j = 0; j < x_size; j++) {
@@ -241,24 +233,26 @@ void print_map(node* head) {
         }
         printf("---");
     }
+    printf("\n\n");
+
 }
 
-void auto_make_ship(node* head,FILE* map,int size){
+void auto_make_ship(node *head, FILE *map, int size) {
     int x1, x2, y1, y2;
-    fscanf(map,"%d %d-%d %d",&y1,&x1,&y2,&x2);
+    fscanf(map, "%d %d-%d %d", &y1, &x1, &y2, &x2);
     int x = (x1 >= x2) ? x2 : x1;
     int y = (y1 >= y2) ? y2 : y1;
     if (y1 == y2) {
 
-        for (int j = 0; j <size ; j++) {
-            node* tmp = find(&head,y,x);
+        for (int j = 0; j < size; j++) {
+            node *tmp = find(&head, y, x);
             tmp->ship = true;
             x++;
         }
     }
     if (x1 == x2) {
         for (int j = 0; j < size; j++) {
-            node* tmp = find(&head,y,x);
+            node *tmp = find(&head, y, x);
             tmp->ship = true;
             y++;
         }
@@ -266,40 +260,41 @@ void auto_make_ship(node* head,FILE* map,int size){
 
 }
 
-void auto_arrange_ships(node* head){
+void auto_arrange_ships(node *head) {
     FILE *map;
 
-    int d = (rand()%5)+1;
-    printf("%d\n",d);
+    int d = (rand() % 5) + 1;
+    printf("%d\n", d);
     switch (d) {
         case 1:
-            map = fopen("1.txt","rb");
+            map = fopen("1.txt", "rb");
             break;
         case 2:
-            map = fopen("2.txt","rb");
+            map = fopen("2.txt", "rb");
             break;
         case 3:
-            map = fopen("3.txt","rb");
+            map = fopen("3.txt", "rb");
             break;
         case 4:
-            map = fopen("4.txt","rb");
+            map = fopen("4.txt", "rb");
             break;
         case 5:
-            map = fopen("5.txt","rb");
+            map = fopen("5.txt", "rb");
             break;
     }
 
-    auto_make_ship(head,map,5);
-    for (int i=0;i<2;i++){
-        auto_make_ship(head,map,3);
+    auto_make_ship(head, map, 5);
+    for (int i = 0; i < 2; i++) {
+        auto_make_ship(head, map, 3);
     }
-    for (int i=0;i<3;i++){
-        auto_make_ship(head,map,2);
+    for (int i = 0; i < 3; i++) {
+        auto_make_ship(head, map, 2);
     }
     for (int i = 0; i < 4; i++) {
-        int x,y;
-        fscanf(map,"%d %d",&y,&x);
-        node *tmp =find(&head,y,x);
+        int x, y;
+        fscanf(map, "%d %d", &y, &x);
+        node *tmp = find(&head, y, x);
         tmp->ship = true;
     }
 }
+
