@@ -359,7 +359,7 @@ void W_maker(node* head ,int y , int x){
     }
 }
 
-void shoot(node *head,bool manual) {
+void shoot(node *head,bool manual,int* score){
 
     int y, x;
 
@@ -374,12 +374,12 @@ void shoot(node *head,bool manual) {
 
     if ((x > x_size) || (y > y_size)) {
         printf("Wrong input. try again.\n");
-        shoot(head,manual);
+        shoot(head,manual,score);
     }
     node *tmp = find(&head, y, x);
     if (tmp->state != ' ') {
         printf("Wrong input. choose empty point!\n");
-        shoot(head,manual);
+        shoot(head,manual,score);
     }
     if (tmp->ship == false) {
         tmp->state = 'W';
@@ -388,6 +388,7 @@ void shoot(node *head,bool manual) {
         bool state = true;
         if (find_ship(head, y, x) == 0) {
             tmp->state = 'C';
+            *score += 25;
             W_maker(head,y,x);
         }
         if (find_ship(head, y, x) == 1) {
@@ -410,14 +411,28 @@ void shoot(node *head,bool manual) {
                 }
             }
             if (state) {
+                int cnt=0;
                 while ((y != 0) && (tmp->state != 'W')&&(tmp->ship)) {
                     tmp->state = 'C';
+                    cnt++;
                     W_maker(head,y,x);
                     y--;
                     tmp = find(&head, y, x);
                 }
+                switch (cnt) {
+                    case 2:
+                        *score += 13;
+                        break;
+                    case 3:
+                        *score += 9;
+                        break;
+                    case 5:
+                        *score += 6;
+                        break;
+                }
             } else {
                 tmp->state = 'E';
+                *score += 1;
             }
         }
         if (find_ship(head, y, x) == 2) {
@@ -441,14 +456,28 @@ void shoot(node *head,bool manual) {
 
             }
             if (state) {
+                int cnt = 0;
                 while ((y != y_size) && (tmp->state != 'W') && (tmp->ship)) {
                     tmp->state = 'C';
+                    cnt++;
                     W_maker(head,y,x);
                     y++;
                     tmp = find(&head, y, x);
                 }
+                switch (cnt) {
+                    case 2:
+                        *score += 13;
+                        break;
+                    case 3:
+                        *score += 9;
+                        break;
+                    case 5:
+                        *score += 6;
+                        break;
+                }
             } else {
                 tmp->state = 'E';
+                *score += 1;
             }
         }
         if (find_ship(head, y, x) == 3) {
@@ -471,14 +500,28 @@ void shoot(node *head,bool manual) {
                 }
             }
             if (state) {
+                int cnt = 0;
                 while ((x != 0) && (tmp->state != 'W') && (tmp->ship)) {
                     tmp->state = 'C';
+                    cnt++;
                     W_maker(head,y,x);
                     x--;
                     tmp = find(&head, y, x);
                 }
+                switch (cnt) {
+                    case 2:
+                        *score += 13;
+                        break;
+                    case 3:
+                        *score += 9;
+                        break;
+                    case 5:
+                        *score += 6;
+                        break;
+                }
             } else {
                 tmp->state = 'E';
+                *score += 1;
             }
         }
         if (find_ship(head, y, x) == 4) {
@@ -501,14 +544,28 @@ void shoot(node *head,bool manual) {
                 }
             }
             if (state) {
+                int cnt = 0;
                 while ((x != x_size) && (tmp->state != 'W') && (tmp->ship)) {
                     tmp->state = 'C';
+                    cnt++;
                     W_maker(head,y,x);
                     x++;
                     tmp = find(&head, y, x);
                 }
+                switch (cnt) {
+                    case 2:
+                        *score += 13;
+                        break;
+                    case 3:
+                        *score += 9;
+                        break;
+                    case 5:
+                        *score += 6;
+                        break;
+                }
             } else {
                 tmp->state = 'E';
+                *score += 1;
             }
 
         }
@@ -551,21 +608,36 @@ void shoot(node *head,bool manual) {
                 }
             }
             if (state) {
+                int cnt = 0;
                 while ((x != 0) && (tmp->state != 'W') && (tmp->ship)) {
                     tmp->state = 'C';
+                    cnt++;
                     W_maker(head,y,x);
                     x--;
                     tmp = find(&head, y, x);
                 }
-                x++;
+                x += cnt+1;
                 while ((x != x_size) && (tmp->state != 'W') && (tmp->ship)) {
                     tmp->state = 'C';
+                    cnt++;
                     W_maker(head,y,x);
                     x++;
                     tmp = find(&head, y, x);
                 }
+                switch (cnt) {
+                    case 2:
+                        *score += 13;
+                        break;
+                    case 3:
+                        *score += 9;
+                        break;
+                    case 5:
+                        *score += 6;
+                        break;
+                }
             } else {
                 tmp->state = 'E';
+                *score += 1;
             }
         }
         if (find_ship(head, y, x) == 12) {
@@ -607,22 +679,38 @@ void shoot(node *head,bool manual) {
                 }
             }
             if (state) {
+                int cnt = 0;
                 while ((y != 0) && (tmp->state != 'W') && (tmp->ship)) {
                     tmp->state = 'C';
+                    cnt++;
                     W_maker(head,y,x);
                     y--;
                     tmp = find(&head, y, x);
                 }
-                y++;
+                y += cnt+1;
                 while ((y != x_size) && (tmp->state != 'W') && (tmp->ship)) {
                     tmp->state = 'C';
+                    cnt++;
                     W_maker(head,y,x);
                     y++;
                     tmp = find(&head, y, x);
                 }
+                switch (cnt) {
+                    case 2:
+                        *score += 13;
+                        break;
+                    case 3:
+                        *score += 9;
+                        break;
+                    case 5:
+                        *score += 6;
+                        break;
+                }
             } else {
                 tmp->state = 'E';
+                *score += 1;
             }
         }
     }
-};
+}
+;
