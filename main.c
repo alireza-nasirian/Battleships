@@ -14,7 +14,7 @@ typedef struct Node {
 
 node *head1 = NULL;
 node *head2 = NULL;
-int score1 = 0,score2 = 0;
+int score1 = 0, score2 = 0, turn = 1;
 
 void insert(int key, bool ship, char state, node **head) {
     node *link = (node *) malloc(sizeof(node));
@@ -343,29 +343,29 @@ int find_ship(node *head, int y, int x) {
 
 }
 
-void W_maker(node* head ,int y , int x){
+void W_maker(node *head, int y, int x) {
 
-    for (int i = 0; i < 3; i++){
+    for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            int Y = (y-1)+i, X = (x-1)+j;
-            if ((Y == y_size+1) ||(Y == 0) || (X == x_size+1) || (X == 0)){
+            int Y = (y - 1) + i, X = (x - 1) + j;
+            if ((Y == y_size + 1) || (Y == 0) || (X == x_size + 1) || (X == 0)) {
                 continue;
             }
-            node *tmp = find(&head,Y,X);
-            if (tmp->ship == false){
+            node *tmp = find(&head, Y, X);
+            if (tmp->ship == false) {
                 tmp->state = 'W';
             }
         }
     }
 }
 
-void shoot(node *head,bool manual,int* score){
+void shoot(node *head, bool manual, int *score) {
 
     int y, x;
 
-    if (!manual){
-        y = (rand()%y_size)+1;
-        x = (rand()%x_size)+1;
+    if (!manual) {
+        y = (rand() % y_size) + 1;
+        x = (rand() % x_size) + 1;
     }
     if (manual) {
         printf("Enter the point you want to shoot    <row><column> ex:4 6\n");
@@ -374,22 +374,27 @@ void shoot(node *head,bool manual,int* score){
 
     if ((x > x_size) || (y > y_size)) {
         printf("Wrong input. try again.\n");
-        shoot(head,manual,score);
+        shoot(head, manual, score);
     }
     node *tmp = find(&head, y, x);
     if (tmp->state != ' ') {
         printf("Wrong input. choose empty point!\n");
-        shoot(head,manual,score);
+        shoot(head, manual, score);
     }
     if (tmp->ship == false) {
         tmp->state = 'W';
+        if (turn == 1) {
+            turn = 2;
+        } else {
+            turn = 1;
+        }
     }
     if (tmp->ship == true) {
         bool state = true;
         if (find_ship(head, y, x) == 0) {
             tmp->state = 'C';
             *score += 25;
-            W_maker(head,y,x);
+            W_maker(head, y, x);
         }
         if (find_ship(head, y, x) == 1) {
             int Y = y, X = x;
@@ -399,7 +404,7 @@ void shoot(node *head,bool manual,int* score){
                     break;
                 }
                 node *test = find(&head, Y, X);
-                if (test->ship == false){
+                if (test->ship == false) {
                     break;
                 }
                 if (test->state == ' ') {
@@ -411,11 +416,11 @@ void shoot(node *head,bool manual,int* score){
                 }
             }
             if (state) {
-                int cnt=0;
-                while ((y != 0) && (tmp->state != 'W')&&(tmp->ship)) {
+                int cnt = 0;
+                while ((y != 0) && (tmp->state != 'W') && (tmp->ship)) {
                     tmp->state = 'C';
                     cnt++;
-                    W_maker(head,y,x);
+                    W_maker(head, y, x);
                     y--;
                     tmp = find(&head, y, x);
                 }
@@ -443,7 +448,7 @@ void shoot(node *head,bool manual,int* score){
                     break;
                 }
                 node *test = find(&head, Y, X);
-                if (test->ship == false){
+                if (test->ship == false) {
                     break;
                 }
                 if (test->state == ' ') {
@@ -460,7 +465,7 @@ void shoot(node *head,bool manual,int* score){
                 while ((y != y_size) && (tmp->state != 'W') && (tmp->ship)) {
                     tmp->state = 'C';
                     cnt++;
-                    W_maker(head,y,x);
+                    W_maker(head, y, x);
                     y++;
                     tmp = find(&head, y, x);
                 }
@@ -488,7 +493,7 @@ void shoot(node *head,bool manual,int* score){
                     break;
                 }
                 node *test = find(&head, Y, X);
-                if (test->ship == false){
+                if (test->ship == false) {
                     break;
                 }
                 if (test->state == ' ') {
@@ -504,7 +509,7 @@ void shoot(node *head,bool manual,int* score){
                 while ((x != 0) && (tmp->state != 'W') && (tmp->ship)) {
                     tmp->state = 'C';
                     cnt++;
-                    W_maker(head,y,x);
+                    W_maker(head, y, x);
                     x--;
                     tmp = find(&head, y, x);
                 }
@@ -532,7 +537,7 @@ void shoot(node *head,bool manual,int* score){
                     break;
                 }
                 node *test = find(&head, Y, X);
-                if (test->ship == false){
+                if (test->ship == false) {
                     break;
                 }
                 if (test->state == ' ') {
@@ -548,7 +553,7 @@ void shoot(node *head,bool manual,int* score){
                 while ((x != x_size) && (tmp->state != 'W') && (tmp->ship)) {
                     tmp->state = 'C';
                     cnt++;
-                    W_maker(head,y,x);
+                    W_maker(head, y, x);
                     x++;
                     tmp = find(&head, y, x);
                 }
@@ -577,7 +582,7 @@ void shoot(node *head,bool manual,int* score){
                     break;
                 }
                 node *test = find(&head, Y, X);
-                if (test->ship == false){
+                if (test->ship == false) {
                     break;
                 }
                 if (test->state == ' ') {
@@ -596,7 +601,7 @@ void shoot(node *head,bool manual,int* score){
                     break;
                 }
                 node *test = find(&head, Y, X);
-                if (test->ship == false){
+                if (test->ship == false) {
                     break;
                 }
                 if (test->state == ' ') {
@@ -612,15 +617,15 @@ void shoot(node *head,bool manual,int* score){
                 while ((x != 0) && (tmp->state != 'W') && (tmp->ship)) {
                     tmp->state = 'C';
                     cnt++;
-                    W_maker(head,y,x);
+                    W_maker(head, y, x);
                     x--;
                     tmp = find(&head, y, x);
                 }
-                x += cnt+1;
+                x += cnt + 1;
                 while ((x != x_size) && (tmp->state != 'W') && (tmp->ship)) {
                     tmp->state = 'C';
                     cnt++;
-                    W_maker(head,y,x);
+                    W_maker(head, y, x);
                     x++;
                     tmp = find(&head, y, x);
                 }
@@ -648,7 +653,7 @@ void shoot(node *head,bool manual,int* score){
                     break;
                 }
                 node *test = find(&head, Y, X);
-                if (test->ship == false){
+                if (test->ship == false) {
                     break;
                 }
                 if (test->state == ' ') {
@@ -667,7 +672,7 @@ void shoot(node *head,bool manual,int* score){
                     break;
                 }
                 node *test = find(&head, Y, X);
-                if (test->ship == false){
+                if (test->ship == false) {
                     break;
                 }
                 if (test->state == ' ') {
@@ -683,15 +688,15 @@ void shoot(node *head,bool manual,int* score){
                 while ((y != 0) && (tmp->state != 'W') && (tmp->ship)) {
                     tmp->state = 'C';
                     cnt++;
-                    W_maker(head,y,x);
+                    W_maker(head, y, x);
                     y--;
                     tmp = find(&head, y, x);
                 }
-                y += cnt+1;
+                y += cnt + 1;
                 while ((y != x_size) && (tmp->state != 'W') && (tmp->ship)) {
                     tmp->state = 'C';
                     cnt++;
-                    W_maker(head,y,x);
+                    W_maker(head, y, x);
                     y++;
                     tmp = find(&head, y, x);
                 }
@@ -713,4 +718,59 @@ void shoot(node *head,bool manual,int* score){
         }
     }
 }
-;
+
+void save(node *head, char *FILE_name) {
+    FILE *save;
+    save = fopen(FILE_name, "wb");
+    if (save != NULL) {
+        node *tmp = head;
+        while (tmp != NULL) {
+            fseek(save, 0, SEEK_END);
+            fwrite(tmp, sizeof(node), 1, save);
+            tmp = tmp->next;
+        }
+        fclose(save);
+        save = NULL;
+    } else {
+        printf("FILE open error\n");
+    }
+}
+
+node *read_FILE(node *head, FILE *load) {
+
+    if (head == NULL) {
+        head = (node *) malloc(sizeof(node));
+        fread(head, sizeof(node), 1, load);
+        head->next = NULL;
+    } else {
+        node *tmp = head;
+        node *new = (node *) malloc(sizeof(node));
+        while (tmp->next != NULL) {
+            tmp = tmp->next;
+        }
+        fread(new, sizeof(node), 1, load);
+        tmp->next = new;
+        new->next = NULL;
+    }
+    return head;
+}
+
+node *load(node *head, char *FILE_name) {
+    FILE *load;
+    load = fopen(FILE_name, "rb");
+    if (load != NULL) {
+        head = NULL;
+        fseek(load, 0, SEEK_END);
+        long FILE_size = ftell(load);
+        rewind(load);
+        int num = (int) (FILE_size / (sizeof(node)));
+
+        for (int i = 0; i < num; i++) {
+            fseek(load, (int) sizeof(node) * i, SEEK_SET);
+            head = read_FILE(head, load);
+        }
+    } else {
+        printf("FILE open error\n");
+    }
+    return head;
+}
