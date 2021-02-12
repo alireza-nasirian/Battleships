@@ -963,3 +963,160 @@ void print_players() {
     }
 }
 
+void get_info(node *head, int PT) {
+    int Choose;
+    char name[20];
+    if (PT == 1) {
+        printf("First Player:\n1) Choose from available players\t2) New user\n");
+    } else {
+        printf("Second Player:\n1) Choose from available players\t2) New user\n");
+    }
+    scanf("%d", &Choose);
+    if (Choose == 1) {
+        printf("Enter the name of player:\n");
+        scanf(" %[^\n]", name);
+        if (find_player(&player_list, name) == NULL) {
+            printf("player not found! try again:\n");
+            get_info(head, PT);
+        }
+        if (PT == 1) {
+            player1 = find_player(&player_list, name);
+        } else {
+            player2 = find_player(&player_list, name);
+        }
+    } else if (Choose == 2) {
+        printf("Write the name of new player:\n");
+        scanf(" %[^\n]", name);
+        //if (find_player(&player_list, name) != NULL) {
+        //  printf("this name is already chosen! try an other name:\n");
+        // get_info(head, PT);
+        //}
+        insert_player(name, 0, &player_list);
+        if (PT == 1) {
+            player1 = find_player(&player_list, name);
+        } else {
+            player2 = find_player(&player_list, name);
+        }
+    } else {
+        printf("Wrong input! Try again.\n");
+        get_info(head, PT);
+    }
+
+
+    printf("%s put yor ships on the map:\n1) put manual\t2) auto put\n", name);
+    scanf("%d", &Choose);
+    if (Choose == 1) {
+        arrange_ships(head);
+    } else if (Choose == 2) {
+        auto_arrange_ships(head);
+    } else {
+        printf("Wrong input! Try again.\n");
+        get_info(head, PT);
+    }
+}
+
+int choose;
+
+void menu() {
+    printf("\tBattleships\n");
+    printf("1) play with a friend\t2) play with Bot\n3) Load game\t4) Load last game\n5) Change map size\t6) Score Board\n7) Exit\n");
+
+    scanf("%d", &choose);
+    if (choose == 1) {
+        creat_map(&head1);
+        creat_map(&head2);
+        friend = true;
+        get_info(head1, 1);
+        get_info(head2, 2);
+    } else if (choose == 2) {
+        creat_map(&head1);
+        creat_map(&head2);
+        friend = false;
+        get_info(head1, 1);
+        auto_arrange_ships(head2);
+    } else if (choose == 3) {
+        creat_map(&head1);
+        creat_map(&head2);
+        printf("list of saves:\n");
+        FILE *save_list = fopen("save_list.txt", "r");
+        if (save_list == NULL) {
+            printf("FILE open error!");
+            menu();
+        }
+        char c;
+        c = fgetc(save_list);
+        while (c != EOF) {
+            printf("%c", c);
+            c = fgetc(save_list);
+        }
+        rewind(save_list);
+        int n;
+        char str[20];
+        char name1[20];
+        char name2[20];
+        printf("enter number of the save that you want to load:\n ");
+        scanf("%d", &n);
+        scan_line(n, str, name1, name2);
+        char *one = strcat(str, ".1bin");
+        char *two = strcat(str, ".2bin");
+        head1 = load(head1, one);
+        head2 = load(head2, two);
+        insert_player(name1, 0, &player_list);
+        player1 = find_player(&player_list, name1);
+        if (strcmp(name2, "Bot") == 0) {
+            friend = false;
+            printf("this is a game with Bot\n");
+        } else {
+            insert_player(name2, 0, &player_list);
+            player2 = find_player(&player_list, name2);
+        }
+    } else if (choose == 4) {
+        creat_map(&head1);
+        creat_map(&head2);
+        FILE *save_list = fopen("save_list.txt", "r");
+        if (save_list == NULL) {
+            printf("FILE open error!");
+            menu();
+        }
+        int n = count_lines();
+        char str[20];
+        char name1[20];
+        char name2[20];
+        scan_line(n, str, name1, name2);
+        char *one = strcat(str, ".1bin");
+        char *two = strcat(str, ".2bin");
+        head1 = load(head1, one);
+        head2 = load(head2, two);
+        insert_player(name1, 0, &player_list);
+        player1 = find_player(&player_list, name1);
+        if (strcmp(name2, "Bot") == 0) {
+            friend = false;
+            printf("this is a game with Bot\n");
+        } else {
+            insert_player(name2, 0, &player_list);
+            player2 = find_player(&player_list, name2);
+        }
+    } else if (choose == 5) {
+        while (1) {
+            printf("enter number of ros:\n");
+            scanf("%d", &y_size);
+            printf("enter number of columns:\n");
+            scanf("%d", &x_size);
+            if ((x_size * y_size) < 49) {
+                printf("Map is too small! try again:\n");
+            } else {
+                break;
+            }
+        }
+        menu();
+
+    } else if (choose == 6) {
+        player_list = load_player(player_list);
+        print_players();
+        menu();
+    } else {
+        exit(0);
+    }
+
+
+}
