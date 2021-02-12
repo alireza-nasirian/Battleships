@@ -415,6 +415,40 @@ void W_maker(node *head, int y, int x) {
     }
 }
 
+int count_lines() {
+    char c;
+    int count = 0;
+    FILE *file = fopen("save_list.txt", "r");
+    if (file == NULL) {
+        printf("FILE open error");
+        return 0;
+    }
+    for (c = getc(file); c != EOF; c = getc(file)) {
+        if (c == '\n') {
+            count = count + 1;
+        }
+    }
+    fclose(file);
+    return count;
+}
+
+void scan_line(int n, char file_name[20], char name1[20], char name2[20]) {
+    int x;
+    FILE *file = fopen("save_list.txt", "r");
+    char line[256];
+    int i = 0;
+    while (fgets(line, sizeof(line), file)) {
+        i++;
+        if (i == n - 1) {
+            fscanf(file, "%d) %s  %s: %d  %s: %d", &x, file_name, name1, &score1, name2, &score2);
+
+        }
+    }
+
+    fclose(file);
+
+}
+
 
 void save(node *head, char FILE_name[20]) {
     FILE *save;
