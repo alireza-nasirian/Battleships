@@ -43,6 +43,28 @@ player *find_player(player **head, char name[20]) {
     }
     return current;
 }
+void sortList(player *head) {
+    player *current = head, *index = NULL;
+    player *temp;
+
+    if (head == NULL) {
+        return;
+    } else {
+        while (current != NULL) {
+            index = current->next;
+
+            while (index != NULL) {
+                if (current->score > index->score) {
+                    temp = current;
+                    current = index;
+                    index = temp;
+                }
+                index = index->next;
+            }
+            current = current->next;
+        }
+    }
+}
 
 node *head1 = NULL;
 node *head2 = NULL;
