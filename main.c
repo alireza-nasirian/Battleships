@@ -467,6 +467,23 @@ void save(node *head, char FILE_name[20]) {
     }
 }
 
+void save_player(player *head) {
+    FILE *save;
+    save = fopen("players.bin", "ab");
+    if (save != NULL) {
+        player *tmp = head;
+        while (tmp != NULL) {
+            fseek(save, 0, SEEK_END);
+            fwrite(tmp, sizeof(player), 1, save);
+            tmp = tmp->next;
+        }
+        fclose(save);
+        save = NULL;
+    } else {
+        printf("FILE open error\n");
+    }
+}
+
 
 void shoot(node *head, bool manual, int *score) {
 
