@@ -29,7 +29,20 @@ void insert_player(char name[20], int score, player **head) {
     *head = link;
 }
 
-
+player *find_player(player **head, char name[20]) {
+    player *current = *head;
+    if (head == NULL) {
+        return NULL;
+    }
+    while (strcmp(name, (*head)->name) != 0) {
+        if (current->next == NULL) {
+            return NULL;
+        } else {
+            current = current->next;
+        }
+    }
+    return current;
+}
 
 node *head1 = NULL;
 node *head2 = NULL;
