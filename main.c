@@ -916,3 +916,41 @@ node *load(node *head, char *FILE_name) {
     return head;
 }
 
+player *read_player(player *head) {
+    FILE *load = fopen("players.bin", "rb");
+    if (head == NULL) {
+        head = (player *) malloc(sizeof(player));
+        fread(head, sizeof(player), 1, load);
+        head->next = NULL;
+    } else {
+        player *tmp = head;
+        player *new = (player *) malloc(sizeof(player));
+        while (tmp->next != NULL) {
+            tmp = tmp->next;
+        }
+        fread(new, sizeof(player), 1, load);
+        tmp->next = new;
+        new->next = NULL;
+    }
+    return head;
+
+}
+
+player *load_player(player *head) {
+    FILE *load = fopen("players.bin", "rb");
+    if (load != NULL) {
+        head = NULL;
+        fseek(load, 0, SEEK_END);
+        long FILE_size = ftell(load);
+        rewind(load);
+        int num = (int) (FILE_size / (sizeof(player)));
+        for (int i = 0; i < num; i++) {
+            fseek(load, (int) sizeof(player) * i, SEEK_SET);
+            head = read_player(head);
+        }
+    } else {
+        printf("FILE open error\n");
+    }
+    return head;
+}
+
