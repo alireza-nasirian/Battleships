@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+#include <string.h>
 
 int x_size = 10, y_size = 10;
+bool friend;
 
 typedef struct Node {
     bool ship;      //true: when this node contains ship - false: this node doesn't contain ship
@@ -12,8 +14,27 @@ typedef struct Node {
     struct Node *next;
 } node;
 
+typedef struct Player {
+    char name[20];
+    int score;
+    struct Player *next;
+} player;
+
+void insert_player(char name[20], int score, player **head) {
+    player *link = (player *) malloc(sizeof(player));
+    strcpy(link->name, name);
+    link->score = score;
+    link->next = *head;
+
+    *head = link;
+}
+
+
+
 node *head1 = NULL;
 node *head2 = NULL;
+player *player_list = NULL;
+player *player1 = NULL, *player2 = NULL;
 int score1 = 0, score2 = 0, turn = 1;
 
 void insert(int key, bool ship, char state, node **head) {
@@ -33,7 +54,7 @@ void creat_map(node **head) {
 }
 
 node *find(node **head, int y, int x) {
-    int key = ((y - 1) * 10) + x;
+    int key = ((y - 1) * x_size) + x;
 
     node *current = *head;
 
@@ -50,6 +71,7 @@ node *find(node **head, int y, int x) {
     }
     return current;
 }
+
 
 void make_ship(int size, node *head) {
     int x1, x2, y1, y2;
@@ -265,7 +287,6 @@ void auto_arrange_ships(node *head) {
     FILE *map;
 
     int d = (rand() % 5) + 1;
-    printf("%d\n", d);
     switch (d) {
         case 1:
             map = fopen("1.txt", "rb");
@@ -359,6 +380,25 @@ void W_maker(node *head, int y, int x) {
     }
 }
 
+
+void save(node *head, char FILE_name[20]) {
+    FILE *save;
+    save = fopen(FILE_name, "wb");
+    if (save != NULL) {
+        node *tmp = head;
+        while (tmp != NULL) {
+            fseek(save, 0, SEEK_END);
+            fwrite(tmp, sizeof(node), 1, save);
+            tmp = tmp->next;
+        }
+        fclose(save);
+        save = NULL;
+    } else {
+        printf("FILE open error\n");
+    }
+}
+
+
 void shoot(node *head, bool manual, int *score) {
 
     int y, x;
@@ -369,7 +409,11 @@ void shoot(node *head, bool manual, int *score) {
     }
     if (manual) {
         printf("Enter the point you want to shoot    <row><column> ex:4 6\n");
-        scanf("%d %d", &y, &x);
+        //y = save_game();
+       if (y == -1) {
+            shoot(head, manual, score);
+        }
+        scanf(" %d", &x);
     }
 
     if ((x > x_size) || (y > y_size)) {
@@ -719,23 +763,6 @@ void shoot(node *head, bool manual, int *score) {
     }
 }
 
-void save(node *head, char *FILE_name) {
-    FILE *save;
-    save = fopen(FILE_name, "wb");
-    if (save != NULL) {
-        node *tmp = head;
-        while (tmp != NULL) {
-            fseek(save, 0, SEEK_END);
-            fwrite(tmp, sizeof(node), 1, save);
-            tmp = tmp->next;
-        }
-        fclose(save);
-        save = NULL;
-    } else {
-        printf("FILE open error\n");
-    }
-}
-
 node *read_FILE(node *head, FILE *load) {
 
     if (head == NULL) {
@@ -774,3 +801,4 @@ node *load(node *head, char *FILE_name) {
     }
     return head;
 }
+
