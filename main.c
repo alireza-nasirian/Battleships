@@ -954,3 +954,12 @@ player *load_player(player *head) {
     return head;
 }
 
+void print_players() {
+    player *ptr = player_list;
+    sortList(ptr);
+    while (ptr != NULL) {
+        printf("name: %s\tscore: %d\n", ptr->name, ptr->score);
+        ptr = ptr->next;
+    }
+}
+
