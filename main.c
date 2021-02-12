@@ -467,6 +467,34 @@ void save(node *head, char FILE_name[20]) {
     }
 }
 
+int save_game() {
+    int s;
+    char s_name[20], *one, *two;
+    scanf("%d", &s);
+    if (s == -1) {
+        printf("enter yor save name:\n");
+        scanf(" %[^\n]", s_name);
+        FILE *save_list = fopen("save_list.txt", "a");
+        int lines = count_lines();
+        if (friend) {
+            fprintf(save_list, "%d) %s  %s: %d  %s: %d\n", lines + 1, s_name, player1->name, score1, player2->name,
+                    score2);
+        } else {
+            fprintf(save_list, "%d) %s  %s: %d  Bot: %d\n", lines + 1, s_name, player1->name, score1, score2);
+        }
+        char s_name2[20];
+        strcpy(s_name2,s_name);
+        one = strcat(s_name, "1.bin");
+        two = strcat(s_name2, "2.bin");
+        save(head1, one);
+        save(head2, two);
+        fclose(save_list);
+
+    }
+    return s;
+}
+
+
 void save_player(player *head) {
     FILE *save;
     save = fopen("players.bin", "ab");
@@ -495,7 +523,7 @@ void shoot(node *head, bool manual, int *score) {
     }
     if (manual) {
         printf("Enter the point you want to shoot    <row><column> ex:4 6\n");
-        //y = save_game();
+        y = save_game();
        if (y == -1) {
             shoot(head, manual, score);
         }
