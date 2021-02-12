@@ -107,7 +107,6 @@ node *find(node **head, int y, int x) {
     return current;
 }
 
-
 void make_ship(int size, node *head) {
     int x1, x2, y1, y2;
     while (1) {
@@ -449,7 +448,6 @@ void scan_line(int n, char file_name[20], char name1[20], char name2[20]) {
 
 }
 
-
 void save(node *head, char FILE_name[20]) {
     FILE *save;
     save = fopen(FILE_name, "wb");
@@ -494,7 +492,6 @@ int save_game() {
     return s;
 }
 
-
 void save_player(player *head) {
     FILE *save;
     save = fopen("players.bin", "ab");
@@ -511,7 +508,6 @@ void save_player(player *head) {
         printf("FILE open error\n");
     }
 }
-
 
 void shoot(node *head, bool manual, int *score) {
 
@@ -1119,4 +1115,64 @@ void menu() {
     }
 
 
+}
+
+int main() {
+
+    srand(time(NULL));
+
+    menu();
+
+    system("cls");
+
+    while ((score1 < 174) && (score2 < 174)) {
+        if (friend) {
+            printf("%s's score in this game: %d\t%s's score in this game: %d\n\n", player1->name, score1, player2->name,
+                   score2);
+        }
+        if (turn == 1) {
+            if (friend) {
+                printf("%s's map:\n\n", player2->name);
+            } else {
+                printf("%s's score in this game: %d\tBot's score: %d\n\n", player1->name, score1, score2);
+                printf("Bot's map:\n");
+            }
+            print_map(head2);
+            shoot(head2, true, &score1);
+            system("cls");
+            print_map(head2);
+            _sleep(4000);
+            system("cls");
+        }
+        if (turn == 2) {
+            printf("%s's map:\n\n", player1->name);
+            print_map(head1);
+            shoot(head1, friend, &score2);
+            system("cls");
+            print_map(head1);
+            _sleep(4000);
+            system("cls");
+        }
+    }
+    if (score1 >= 174) {
+        printf("%s won the game\n", player1->name);
+        player1->score += score1;
+        if (friend) {
+            player2->score += (score2 / 2);
+        }
+    } else if (score2 >= 174) {
+        if (friend) {
+            printf("%s won the game\n", player2->name);
+            player2->score += score2;
+            player1->score += (score1 / 2);
+        } else {
+            printf("Bot won the game\n");
+            score1 += (score1 / 2);
+        }
+    }
+    save_player(player1);
+    if (friend) {
+        save_player(player2);
+    }
+    _sleep(5000);
 }
